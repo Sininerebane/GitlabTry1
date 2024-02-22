@@ -1,0 +1,43 @@
+stages:          # List of stages for jobs, and their order of execution
+  - build
+  - test
+  - deploy
+
+
+test1:        # List of test for jobs, and their order of execution 
+  stage: test
+  exept:
+    - master
+  script: 
+    - mvn clean install  
+  tags:
+    - windows 
+
+test1:        # List of test for jobs, and their order of execution 
+  stage: test
+  exept:
+    - master
+  script: 
+    - mvn clean install  
+  tags:
+    - shell
+
+test-unit:
+  stage: test
+  only: 
+    - master
+  script:
+    - mvn clear package
+    - cp target/java-hello-world-with-maven_tryxx*.jar java-hello-world-with-maven_tryxx-${CI_CD}       
+  artifacts:
+    name: java-hello-world-with-maven_tryxx
+    expire_in: 3 week
+    paths: java-hello-world-with-maven_tryxx-${CI_COMMIT_SHA}.jar
+
+deploy:
+  stage: deploy
+  needs: [test-unit]
+  only:
+    - master
+  script:
+    - ls java-hello-world-with-maven_tryxx*.jar    
